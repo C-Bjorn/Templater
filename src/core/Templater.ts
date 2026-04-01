@@ -568,6 +568,14 @@ export class Templater {
             return;
         }
 
+        // Avoids template replacement when syncing company template files
+        const company_folder = normalizePath(
+            templater.plugin.settings.company_templates_folder ?? ""
+        );
+        if (file.path.includes(company_folder) && company_folder !== "") {
+            return;
+        }
+
         // Avoids template replacement in ignored folders
         for (const ignore_folder of templater.plugin.settings.ignore_folders_on_creation) {
             const ignore_path = normalizePath(ignore_folder.folder);
