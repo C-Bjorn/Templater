@@ -516,6 +516,41 @@ export class Templater {
         }
     }
 
+    /**
+     * Resolves a template file, checking the company_templates_folder first
+     * (by basename) before falling back to the standard resolve_tfile path.
+     * When company_templates_folder is empty, behaves identically to resolve_tfile.
+     */
+    resolve_template_tfile(template_str: string): TFile {
+        const company_folder =
+            this.plugin.settings.company_templates_folder?.trim();
+        if (company_folder) {
+            // Use only the basename so that personal-folder-prefixed paths
+            // (e.g. "Templates/DailyNote") still match company equivalents.
+            const basename =
+                template_str.split("/").pop() ?? template_str;
+            // Try exact basename match (covers "Name.md" already)
+            const candidate = normalizePath(`${company_folder}/${basename}`);
+            const company_file =
+                this.plugin.app.vault.getAbstractFileByPath(candidate);
+            if (company_file instanceof TFile) {
+                return company_file;
+            }
+            // Try appending .md when no extension is present
+            if (!basename.includes(".")) {
+                const candidate_md = normalizePath(
+                    `${company_folder}/${basename}.md`
+                );
+                const company_file_md =
+                    this.plugin.app.vault.getAbstractFileByPath(candidate_md);
+                if (company_file_md instanceof TFile) {
+                    return company_file_md;
+                }
+            }
+        }
+        return resolve_tfile(this.plugin.app, template_str);
+    }
+
     static async on_file_creation(
         templater: Templater,
         app: App,
@@ -566,7 +601,9 @@ export class Templater {
             }
             const template_file: TFile = await errorWrapper(
                 async (): Promise<TFile> => {
-                    return resolve_tfile(app, folder_template_match);
+                    return templater.resolve_template_tfile(
+                        folder_template_match
+                    );
                 },
                 `Couldn't find template ${folder_template_match}`
             );
@@ -586,7 +623,9 @@ export class Templater {
             }
             const template_file: TFile = await errorWrapper(
                 async (): Promise<TFile> => {
-                    return resolve_tfile(app, file_template_match);
+                    return templater.resolve_template_tfile(
+                        file_template_match
+                    );
                 },
                 `Couldn't find template ${file_template_match}`
             );
