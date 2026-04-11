@@ -15,7 +15,7 @@ jobs:
                   deno-version: v1.x
             - uses: pnpm/action-setup@v4
               with:
-                  run_install: false
+                  version: 10
             - name: pnpm build
               run: |
                   pnpm install
