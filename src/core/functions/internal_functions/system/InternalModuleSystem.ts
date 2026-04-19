@@ -68,21 +68,24 @@ export class InternalModuleSystem extends InternalModule {
         items: T[],
         throw_on_cancel: boolean,
         placeholder: string,
-        limit?: number
+        limit?: number,
+        default_value?: T
     ) => Promise<T> {
         return async <T>(
             text_items: string[] | ((item: T) => string),
             items: T[],
             throw_on_cancel = false,
             placeholder = "",
-            limit?: number
+            limit?: number,
+            default_value?: T
         ): Promise<T> => {
             const suggester = new SuggesterModal(
                 this.plugin.app,
                 text_items,
                 items,
                 placeholder,
-                limit
+                limit,
+                default_value
             );
             const promise = new Promise(
                 (
@@ -106,21 +109,24 @@ export class InternalModuleSystem extends InternalModule {
         items: T[],
         throw_on_cancel: boolean,
         title: string,
-        limit?: number
+        limit?: number,
+        default_values?: T[]
     ) => Promise<T[]> {
         return async <T>(
             text_items: string[] | ((item: T) => string),
             items: T[],
             throw_on_cancel = false,
             title = "",
-            limit?: number
+            limit?: number,
+            default_values?: T[]
         ): Promise<T[]> => {
             const suggester = new MultiSuggesterModal(
                 this.plugin.app,
                 text_items,
                 items,
                 title,
-                limit
+                limit,
+                default_values
             );
             const promise = new Promise(
                 (
