@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.19.1](https://github.com/SilentVoid13/Templater/compare/2.19.0...2.19.1) (2026-04-19)
+
+
+### Bug Fixes
+
+* Use AbstractInputSuggest for file/folder suggests instead of custom implementation ([213cfd4](https://github.com/SilentVoid13/Templater/commit/213cfd49d99adcf687a56cf75625b56a18e91bda))
+
 ## [2.19.0](https://github.com/SilentVoid13/Templater/compare/2.18.1...2.19.0) (2026-04-11)
 
 
