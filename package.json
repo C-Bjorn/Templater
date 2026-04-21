@@ -1,6 +1,6 @@
 {
     "name": "templater-obsidian",
-    "version": "2.20.0-endogon.2",
+    "version": "2.20.0-endogon.3",
     "description": "Create and use templates",
     "main": "main.js",
     "scripts": {
@@ -59,6 +59,6 @@
         }
     },
     "pnpm": {
-        "onlyBuiltDependencies": ["esbuild"]
+        "onlyBuiltDependencies": ["@codemirror/language", "esbuild"]
     }
 }
