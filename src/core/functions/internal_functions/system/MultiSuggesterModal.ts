@@ -22,7 +22,8 @@ export class MultiSuggesterModal<T> extends Modal {
         private text_items: string[] | ((item: T) => string),
         private items: T[],
         title: string,
-        limit?: number
+        limit?: number,
+        default_values?: T[]
     ) {
         super(app);
         this.setTitle(title);
@@ -49,10 +50,13 @@ export class MultiSuggesterModal<T> extends Modal {
         new ButtonComponent(buttonContainer)
             .setButtonText("Cancel")
             .onClick(() => this.close());
+        if (default_values) {
+            this.selectedItems = default_values;
+        }
     }
 
     onOpen(): void {
-        this.display();
+        this.processSelectedItems();
     }
 
     display(): void {
@@ -85,6 +89,10 @@ export class MultiSuggesterModal<T> extends Modal {
 
     onChooseItem(item: T): void {
         this.selectedItems.push(item);
+        this.processSelectedItems();
+    }
+
+    private processSelectedItems(): void {
         const filteredItems = this.items.filter((item) => {
             return !this.selectedItems.some(
                 (selected_item) => selected_item === item

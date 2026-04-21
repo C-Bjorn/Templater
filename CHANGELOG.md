@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.19.2](https://github.com/SilentVoid13/Templater/compare/2.19.1...2.19.2) (2026-04-21)
+
+
+### Bug Fixes
+
+* call super.onOpen() in SuggesterModal to restore suggestions rendering ([#1717](https://github.com/SilentVoid13/Templater/issues/1717)) ([91a8572](https://github.com/SilentVoid13/Templater/commit/91a8572f0aa9f6e54ac850ef62be4ed8b51e17b2)), closes [#1718](https://github.com/SilentVoid13/Templater/issues/1718)
+
+### [2.19.1](https://github.com/SilentVoid13/Templater/compare/2.19.0...2.19.1) (2026-04-19)
+
+
+### Bug Fixes
+
+* Use AbstractInputSuggest for file/folder suggests instead of custom implementation ([213cfd4](https://github.com/SilentVoid13/Templater/commit/213cfd49d99adcf687a56cf75625b56a18e91bda))
+
+## [2.19.0](https://github.com/SilentVoid13/Templater/compare/2.18.1...2.19.0) (2026-04-11)
+
+
+### Features
+
+* add CLI handler for template-based note creation ([#1703](https://github.com/SilentVoid13/Templater/issues/1703)) ([6740eab](https://github.com/SilentVoid13/Templater/commit/6740eabacb9888caa6d705c5f2b3c245e09de69a)), closes [#1702](https://github.com/SilentVoid13/Templater/issues/1702)
+
+
+### Bug Fixes
+
+* Handle unset templates directory ([#1701](https://github.com/SilentVoid13/Templater/issues/1701)) ([78203a2](https://github.com/SilentVoid13/Templater/commit/78203a2e7a9c6af297993348b7d816cff14fd9ef)), closes [#1686](https://github.com/SilentVoid13/Templater/issues/1686)
+* typo 'simple' -> 'single' in syntax.md ([#1709](https://github.com/SilentVoid13/Templater/issues/1709)) ([ab35eca](https://github.com/SilentVoid13/Templater/commit/ab35eca365871ef1638b721f4cdffa6112aad27a)), closes [#1704](https://github.com/SilentVoid13/Templater/issues/1704)
+
 ### [2.18.1](https://github.com/SilentVoid13/Templater/compare/2.18.0...2.18.1) (2026-01-29)
 
 ## [2.18.0](https://github.com/SilentVoid13/Templater/compare/2.17.1...2.18.0) (2026-01-28)
