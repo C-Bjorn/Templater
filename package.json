@@ -4,7 +4,8 @@
     "description": "Create and use templates",
     "main": "main.js",
     "scripts": {
-        "dev": "node esbuild.config.mjs",
+        "dev": "node esbuild.config.mjs E:\\GIT\\LOCAL\\obsidian-graphiti-mcp\\test-vault\\.obsidian\\plugins\\templater-obsidian",
+        "bjorn": "node esbuild.config.mjs E:\\ObsidianVault\\Bjorn\\.obsidian\\plugins\\templater-obsidian",
         "build": "node esbuild.config.mjs production",
         "pretest": "eslint --ignore-path .gitignore src/",
         "test-build": "node esbuild.config.mjs production test",
