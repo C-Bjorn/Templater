@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.19.2](https://github.com/SilentVoid13/Templater/compare/2.19.1...2.19.2) (2026-04-21)
+
+
+### Bug Fixes
+
+* call super.onOpen() in SuggesterModal to restore suggestions rendering ([#1717](https://github.com/SilentVoid13/Templater/issues/1717)) ([91a8572](https://github.com/SilentVoid13/Templater/commit/91a8572f0aa9f6e54ac850ef62be4ed8b51e17b2)), closes [#1718](https://github.com/SilentVoid13/Templater/issues/1718)
+
 ### [2.19.1](https://github.com/SilentVoid13/Templater/compare/2.19.0...2.19.1) (2026-04-19)
 
 
