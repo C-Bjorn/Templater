@@ -1,10 +1,11 @@
 {
     "name": "templater-obsidian",
-    "version": "2.19.0-beta.1",
+    "version": "2.20.0-beta.3",
     "description": "Create and use templates",
     "main": "main.js",
     "scripts": {
-        "dev": "node esbuild.config.mjs",
+        "dev": "node esbuild.config.mjs E:\\GIT\\LOCAL\\obsidian-graphiti-mcp\\test-vault\\.obsidian\\plugins\\templater-obsidian",
+        "bjorn": "node esbuild.config.mjs E:\\ObsidianVault\\Bjorn\\.obsidian\\plugins\\templater-obsidian",
         "build": "node esbuild.config.mjs production",
         "pretest": "eslint --ignore-path .gitignore src/",
         "test-build": "node esbuild.config.mjs production test",
@@ -37,7 +38,7 @@
         "esbuild-plugin-toml": "^0.0.1",
         "eslint": "^8.27.0",
         "moment": "^2.29.4",
-        "obsidian": "^1.11.4",
+        "obsidian": "^1.12.2",
         "standard-version": "^9.5.0",
         "stringify-package": "^1.0.1",
         "ts-node": "^9.1.1",
@@ -48,7 +49,6 @@
         "@codemirror/state": "^6.1.2",
         "@codemirror/view": "^6.4.1",
         "@microsoft/tsdoc": "^0.15.1",
-        "@popperjs/core": "^2.11.6",
         "@silentvoid13/rusty_engine": "^0.4.0",
         "child_process": "^1.0.2",
         "typescript": "^4.8.4"

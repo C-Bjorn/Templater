@@ -48,15 +48,36 @@ const wasmPlugin = (config) => {
 const prod = process.argv[2] === "production";
 const test_build = process.argv[2] === "test" || process.argv[3] === "test";
 
+// Any arg that looks like an absolute path is the vault output directory
+const vaultPath = process.argv.slice(2).find(
+    (arg) => arg.includes(":\\") || (arg.startsWith("/") && arg.length > 1)
+) ?? null;
+const outDir = vaultPath ?? ".";
+
 let entry_point;
 let outfile;
 if (!test_build) {
     entry_point = "src/main.ts";
-    outfile = "main.js";
+    outfile = path.join(outDir, "main.js");
 } else {
     entry_point = "tests/main.test.ts";
-    outfile = "main.test.js";
+    outfile = path.join(outDir, "main.test.js");
 }
+
+// PURPOSE: Copy manifest.json and styles.css to vault plugin dir after each build
+const copyAssetsPlugin = () => ({
+    name: "copy-assets",
+    setup(build) {
+        build.onEnd(() => {
+            if (!vaultPath) return;
+            ["manifest.json", "styles.css"].forEach((file) => {
+                if (fs.existsSync(file)) {
+                    fs.copyFileSync(file, path.join(vaultPath, file));
+                }
+            });
+        });
+    },
+});
 
 esbuild
     .build({
@@ -98,7 +119,7 @@ esbuild
         sourcemap: prod ? false : "inline",
         treeShaking: true,
         minify: prod,
-        plugins: [toml(), wasmPlugin({ mode: "embed" })],
+        plugins: [toml(), wasmPlugin({ mode: "embed" }), copyAssetsPlugin()],
         outfile: outfile,
     })
     .catch(() => process.exit(1));

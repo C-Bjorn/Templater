@@ -1,3 +1,6 @@
+# Roo project settings (contains API tokens — do not commit)
+.roo/
+
 # Editors
 
 ## Intellij

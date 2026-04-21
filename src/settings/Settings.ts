@@ -24,6 +24,7 @@ export interface IgnoreFolderOnCreation {
 export const DEFAULT_SETTINGS: Settings = {
     command_timeout: 5,
     templates_folder: "",
+    company_templates_folder: "",
     templates_pairs: [["", ""]],
     trigger_on_file_creation: false,
     auto_jump_to_cursor: false,
@@ -46,6 +47,7 @@ export const DEFAULT_SETTINGS: Settings = {
 export interface Settings {
     command_timeout: number;
     templates_folder: string;
+    company_templates_folder: string;
     templates_pairs: Array<[string, string]>;
     trigger_on_file_creation: boolean;
     auto_jump_to_cursor: boolean;
@@ -75,6 +77,7 @@ export class TemplaterSettingTab extends PluginSettingTab {
         this.containerEl.empty();
 
         this.add_template_folder_setting();
+        this.add_company_template_folder_setting();
         this.add_internal_functions_setting();
         this.add_syntax_highlighting_settings();
         this.add_auto_jump_to_cursor();
@@ -105,6 +108,32 @@ export class TemplaterSettingTab extends PluginSettingTab {
                         new_folder = new_folder.replace(/\/$/, "");
 
                         this.plugin.settings.templates_folder = new_folder;
+                        this.plugin.save_settings();
+                    });
+                // @ts-ignore
+                cb.containerEl.addClass("templater_search");
+            });
+    }
+
+    add_company_template_folder_setting(): void {
+        new Setting(this.containerEl)
+            .setName("Company templates folder (MegaMem)")
+            .setDesc(
+                "Templates here take priority over your personal templates folder."
+            )
+            .addSearch((cb) => {
+                new FolderSuggest(this.app, cb.inputEl);
+                cb.setPlaceholder("Example: Company/Templates")
+                    .setValue(
+                        this.plugin.settings.company_templates_folder
+                    )
+                    .onChange((new_folder) => {
+                        // Trim folder and strip ending slash if there
+                        new_folder = new_folder.trim();
+                        new_folder = new_folder.replace(/\/$/, "");
+
+                        this.plugin.settings.company_templates_folder =
+                            new_folder;
                         this.plugin.save_settings();
                     });
                 // @ts-ignore

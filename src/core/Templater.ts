@@ -46,8 +46,8 @@ export type RunningConfig = {
 export class Templater {
     public parser: Parser;
     public functions_generator: FunctionsGenerator;
-    public current_functions_object: Record<string, unknown>;
-    public files_with_pending_templates: Set<string>;
+    public current_functions_object!: Record<string, unknown>;
+    public files_with_pending_templates!: Set<string>;
 
     constructor(private plugin: TemplaterPlugin) {
         this.functions_generator = new FunctionsGenerator(this.plugin);
@@ -129,7 +129,7 @@ export class Templater {
                 case "current": {
                     const active_file = get_active_file(this.plugin.app);
                     if (active_file) {
-                        folder = active_file.parent;
+                        folder = active_file.parent ?? undefined;
                     }
                     break;
                 }
@@ -492,17 +492,18 @@ export class Templater {
     }
 
     get_new_file_template_for_folder(folder: TFolder): string | undefined {
+        let current: TFolder | null = folder;
         do {
             const match = this.plugin.settings.folder_templates.find(
-                (e) => e.folder == folder.path
+                (e) => e.folder == current!.path
             );
 
             if (match && match.template) {
                 return match.template;
             }
 
-            folder = folder.parent;
-        } while (folder);
+            current = current!.parent;
+        } while (current);
     }
 
     get_new_file_template_for_file(file: TFile): string | undefined {
@@ -514,6 +515,41 @@ export class Templater {
         if (match && match.template) {
             return match.template;
         }
+    }
+
+    /**
+     * Resolves a template file, checking the company_templates_folder first
+     * (by basename) before falling back to the standard resolve_tfile path.
+     * When company_templates_folder is empty, behaves identically to resolve_tfile.
+     */
+    resolve_template_tfile(template_str: string): TFile {
+        const company_folder =
+            this.plugin.settings.company_templates_folder?.trim();
+        if (company_folder) {
+            // Use only the basename so that personal-folder-prefixed paths
+            // (e.g. "Templates/DailyNote") still match company equivalents.
+            const basename =
+                template_str.split("/").pop() ?? template_str;
+            // Try exact basename match (covers "Name.md" already)
+            const candidate = normalizePath(`${company_folder}/${basename}`);
+            const company_file =
+                this.plugin.app.vault.getAbstractFileByPath(candidate);
+            if (company_file instanceof TFile) {
+                return company_file;
+            }
+            // Try appending .md when no extension is present
+            if (!basename.includes(".")) {
+                const candidate_md = normalizePath(
+                    `${company_folder}/${basename}.md`
+                );
+                const company_file_md =
+                    this.plugin.app.vault.getAbstractFileByPath(candidate_md);
+                if (company_file_md instanceof TFile) {
+                    return company_file_md;
+                }
+            }
+        }
+        return resolve_tfile(this.plugin.app, template_str);
     }
 
     static async on_file_creation(
@@ -530,6 +566,14 @@ export class Templater {
             templater.plugin.settings.templates_folder
         );
         if (file.path.includes(template_folder) && template_folder !== "/") {
+            return;
+        }
+
+        // Avoids template replacement when syncing company template files
+        const company_folder = normalizePath(
+            templater.plugin.settings.company_templates_folder ?? ""
+        );
+        if (file.path.includes(company_folder) && company_folder !== "") {
             return;
         }
 
@@ -551,6 +595,18 @@ export class Templater {
         }
 
         const file_content = await app.vault.read(file);
+
+        // Guard: if the file already has any content, it was created by an
+        // external process (sync plugin, Relay, Syncthing, etc.) — not a
+        // user-initiated blank note. Applying a folder template here would
+        // overwrite the synced content and corrupt relay state.
+        // NOTE: files_with_pending_templates (checked above) already handles
+        // Templater-initiated file creation, so this guard is safe for all
+        // legitimate Templater workflows.
+        if (file_content.trim() !== "") {
+            return;
+        }
+
         const frontmatter_info = getFrontMatterInfo(file_content);
         const content_size =
             file_content.length - frontmatter_info.contentStart;
@@ -559,14 +615,17 @@ export class Templater {
             content_size == 0 &&
             templater.plugin.settings.enable_folder_templates
         ) {
-            const folder_template_match =
-                templater.get_new_file_template_for_folder(file.parent);
+            const folder_template_match = file.parent
+                ? templater.get_new_file_template_for_folder(file.parent)
+                : undefined;
             if (!folder_template_match) {
                 return;
             }
             const template_file: TFile = await errorWrapper(
                 async (): Promise<TFile> => {
-                    return resolve_tfile(app, folder_template_match);
+                    return templater.resolve_template_tfile(
+                        folder_template_match
+                    );
                 },
                 `Couldn't find template ${folder_template_match}`
             );
@@ -586,7 +645,9 @@ export class Templater {
             }
             const template_file: TFile = await errorWrapper(
                 async (): Promise<TFile> => {
-                    return resolve_tfile(app, file_template_match);
+                    return templater.resolve_template_tfile(
+                        file_template_match
+                    );
                 },
                 `Couldn't find template ${file_template_match}`
             );
@@ -596,6 +657,15 @@ export class Templater {
             }
             await templater.write_template_to_file(template_file, file);
         } else {
+            // Guard: Obsidian registers files in the metadata cache before sync
+            // writes them to disk. vault.adapter.exists() checks the real filesystem,
+            // preventing ENOENT when on_file_creation fires prematurely.
+            if (!(await app.vault.adapter.exists(file.path))) {
+                console.log(
+                    `Templater skipped parsing ${file.path}: file not yet on disk (sync in progress)`
+                );
+                return;
+            }
             const SIZE_LIMIT = 100_000;
             if (file.stat.size <= SIZE_LIMIT) {
                 //https://github.com/SilentVoid13/Templater/issues/873
