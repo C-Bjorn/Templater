@@ -1,6 +1,6 @@
 {
     "name": "templater-obsidian",
-    "version": "2.20.0-endogon.1",
+    "version": "2.20.0-endogon.2",
     "description": "Create and use templates",
     "main": "main.js",
     "scripts": {
@@ -57,5 +57,8 @@
         "commitizen": {
             "path": "./node_modules/cz-conventional-changelog"
         }
+    },
+    "pnpm": {
+        "onlyBuiltDependencies": ["esbuild"]
     }
 }

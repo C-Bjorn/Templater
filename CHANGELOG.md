@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [2.20.0-endogon.1](https://github.com/C-Bjorn/Templater/compare/2.18.1...2.20.0-endogon.1) (2026-04-21)
+## [2.20.0-endogon.2](https://github.com/C-Bjorn/Templater/compare/2.18.1...2.20.0-endogon.2) (2026-04-21)
 
 This is the first release of the C-Bjorn/Templater maintained fork, based on upstream 2.19.2.
 
