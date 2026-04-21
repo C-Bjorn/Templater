@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.19.2-endogon.1](https://github.com/C-Bjorn/Templater/compare/2.18.1...2.19.2-endogon.1) (2026-04-21)
+
+This is the first release of the C-Bjorn/Templater maintained fork, based on upstream 2.19.2.
+
+### Features
+
+* **ignore folders on creation:** add `ignore_folders_on_creation` setting — skip `on_file_creation` handler for specified folders and subfolders ([#1710](https://github.com/SilentVoid13/Templater/pull/1710))
+* **company templates folder:** add `company_templates_folder` setting — second template folder whose contents take priority over personal templates folder ([#1713](https://github.com/SilentVoid13/Templater/pull/1713))
+* **CLI handler:** add `templater:create-from-template` CLI handler for headless note creation via Obsidian URI ([#1703](https://github.com/SilentVoid13/Templater/issues/1703))
+* **suggester:** add optional `initial_query` parameter to `tp.system.suggester` and `tp.system.multi_suggester` ([#1139](https://github.com/SilentVoid13/Templater/issues/1139))
+
+### Bug Fixes
+
+* **sync race:** guard `on_file_creation` against ENOENT when Obsidian Sync delivers files before bytes land on disk
+* **sync corruption:** guard `on_file_creation` against overwriting synced content (Relay plugin and similar)
+* **suggester rendering:** call `super.onOpen()` in `SuggesterModal` to restore suggestions rendering after AbstractInputSuggest refactor ([#1717](https://github.com/SilentVoid13/Templater/pull/1717))
+* **file/folder suggesters:** use `AbstractInputSuggest` instead of custom implementation for settings suggesters
+* **unset templates dir:** handle unset templates directory gracefully ([#1701](https://github.com/SilentVoid13/Templater/issues/1686))
+
 ### [2.18.1](https://github.com/SilentVoid13/Templater/compare/2.18.0...2.18.1) (2026-01-29)
 
 ## [2.18.0](https://github.com/SilentVoid13/Templater/compare/2.17.1...2.18.0) (2026-01-28)
